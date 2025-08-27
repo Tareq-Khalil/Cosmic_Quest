@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Quest - International Astronomy Competition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 16px;
+            height: 16px;
+            border: 1px solid rgba(135, 206, 235, 0.8);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            background: rgba(135, 206, 235, 0.1);
+            box-shadow: 0 0 15px rgba(135, 206, 235, 0.3);
+        }
+
+        .cursor-trail {
+            width: 4px;
+            height: 4px;
+            background: rgba(176, 196, 222, 0.6);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 8px rgba(176, 196, 222, 0.4);
+        }
+
+        /* Deep Space Background */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(25, 25, 112, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(72, 61, 139, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+                linear-gradient(180deg, #000428 0%, #004e92 100%);
+            z-index: -3;
+        }
+
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: starTwinkle 3s ease-in-out infinite;
+        }
+
+        .star.small {
+            width: 1px;
+            height: 1px;
+        }
+
+        .star.medium {
+            width: 2px;
+            height: 2px;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        .star.large {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(45deg, transparent, white, transparent);
+            border-radius: 50%;
+            animation: shootingStar 2s linear infinite;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(100px);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(1000px) translateY(-500px);
+                opacity: 0;
+            }
+        }
+
+        .milky-way {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 50% 100%, 
+                    rgba(255, 255, 255, 0.05) 0%, 
+                    rgba(135, 206, 235, 0.02) 30%, 
+                    transparent 70%);
+            transform: rotate(-20deg);
+            z-index: -1;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(20, 30, 50, 0.4);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(135, 206, 235, 0.2);
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(135, 206, 235, 0.2);
+            border-color: rgba(135, 206, 235, 0.4);
+            background: rgba(25, 35, 60, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .hero-card {
+            max-width: 90%;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, #4169E1, #1E90FF, #87CEEB);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(135, 206, 235, 0.6);
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            border: 2px solid rgba(135, 206, 235, 0.4);
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 1px solid rgba(176, 196, 222, 0.3);
+            border-radius: 50%;
+            animation: rotate 15s linear infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .register-btn {
+            background: linear-gradient(45deg, #4169E1, #1E90FF);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(65, 105, 225, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(65, 105, 225, 0.5);
+        }
+
+        .title {
+            margin-top: 2rem;
+        }
+
+        .title h1 {
+            font-size: clamp(2rem, 8vw, 4rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #87CEEB, #4169E1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title p {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 5rem 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .stats-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .stat-number {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: bold;
+            color: #87CEEB;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .about-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-card {
+            margin-bottom: 3rem;
+        }
+
+        .about-section h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffd700;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .kpi {
+            padding: 2rem;
+        }
+
+        .kpi strong {
+            font-size: 1.3rem;
+            color: #ffd700;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .list li::before {
+            content: '⭐';
+            position: absolute;
+            left: 0;
+        }
+
+        .more-info-btn {
+            display: block;
+            margin: 0 auto;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .more-info-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Prize Section */
+        .prize-section {
+            padding: 5rem 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .prize-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .prize-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .prize-section h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 3rem;
+            color: #ffd700;
+        }
+
+        .prize-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .telescope-card {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .telescope-img {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            background: linear-gradient(45deg, #333, #666);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .prize-info-card {
+            padding: 2rem;
+        }
+
+        .prize-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+
+        .sponsor-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sponsor-logo {
+            width: 150px;
+            height: 80px;
+            background: linear-gradient(45deg, #4169E1, #87CEEB);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .sponsor-logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 1rem;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .logo {
+                width: 120px;
+                height: 120px;
+                font-size: 1.5rem;
+            }
+            
+            .logo::before {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .logo::after {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .kpis {
+                grid-template-columns: 1fr;
+            }
+            
+            .prize-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section,
+            .about-section,
+            .prize-section {
+                padding: 3rem 1rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Deep Space Background -->
+    <div class="space-bg"></div>
+    <div class="stars-container"></div>
+    <div class="milky-way"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-card card">
+            <div class="logo-container">
+                <div class="logo">CQ</div>
+                <a href="https://soac.club/cosmicquest.html" class="register-btn">Register Now</a>
+            </div>
+            <div class="title">
+                <h1>Cosmic Quest</h1>
+                <p>International Astronomy Competition for students by students</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card card">
+                <span class="stat-number" data-target="211">0</span>
+                <div class="stat-label">Participants</div>
+            </div>
+            <div class="stat-card card">
+                <span class="stat-number" data-target="22">0</span>
+                <div class="stat-label">Countries</div>
+            </div>
+            <div class="stat-card card">
+                <span class="stat-number" data-target="1">0</span>
+                <div class="stat-label">Prizes</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="about-card card">
+            <h2>About Cosmic Quest</h2>
+            <p>
+                Cosmic Quest is an international astronomy competition organized by the <strong>SOAC – STEM October Astronomy Club</strong> for 9th grade and high school students worldwide. The competition aims to engage students with astronomy and astrophysics through a two-round challenge.
+            </p>
+            
+            <div class="kpis">
+                <div class="kpi card">
+                    <strong>Eligibility and Teams</strong>
+                    <ul class="list">
+                        <li>Open to 9th grade and high school students.</li>
+                        <li>Each team consists of <strong>3 students</strong>.</li>
+                    </ul>
+                </div>
+                <div class="kpi card">
+                    <strong>Competition Structure</strong>
+                    <ul class="list">
+                        <li><strong>Open Round:</strong> 30 analytical questions across 3 days between <strong>September 17–20, 2025</strong> with live leaderboard.</li>
+                        <li><strong>Invitational Round:</strong> Top <strong>32 teams</strong> advance to a live buzz session on <strong>September 30, 2025</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="kpis">
+                <div class="kpi card">
+                    <strong>Timeline</strong>
+                    <ul class="list">
+                        <li>Registration opens: <strong>August 16, 2025</strong></li>
+                        <li>Registration closes: <strong>September 16, 2025</strong></li>
+                        <li>Round One <strong>September 17, 2025</strong> lasts 3 days</li>
+                        <li>Round 2 <strong>September 30, 2025</strong></li>
+                        <li>Winners announced: <strong>October 10, 2025</strong></li>
+                    </ul>
+                </div>
+                <div class="kpi card">
+                    <strong>Prizes</strong>
+                    <ul class="list">
+                        <li>Details announced on <strong>August 25, 2025</strong>.</li>
+                        <li>Includes financial awards, learning opportunities, and certificates/memorabilia.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="https://soac.club/proposal.html" class="more-info-btn">More Detailed Information</a>
+        </div>
+    </section>
+
+    <!-- Prize Section -->
+    <section class="prize-section">
+        <div class="prize-card card">
+            <h2>This Year's Grand Prize</h2>
+            <div class="prize-container">
+                <div class="telescope-card card">
+                    <div class="telescope-img">VR 114-500 EQ Telescope Image</div>
+                </div>
+                <div class="prize-info-card card">
+                    <div class="prize-title">VR 114-500 EQ Telescope!</div>
+                    <p>Experience the wonders of the cosmos with this professional-grade telescope, perfect for serious astronomical observations and astrophotography.</p>
+                    
+                    <div class="sponsor-info">
+                        <p>Sponsored by</p>
+                        <a href="http://atn-telescope.com" class="sponsor-logo" target="_blank">
+                            Voyager Factory
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const trails = [];
+        let mouseX = 0, mouseY = 0;
+
+        // Create cursor trails
+        for (let i = 0; i < 8; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            trails.push({
+                element: trail,
+                x: 0,
+                y: 0
+            });
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursor.style.left = mouseX - 8 + 'px';
+            cursor.style.top = mouseY - 8 + 'px';
+        });
+
+        // Animate cursor trails
+        function animateTrails() {
+            let currentX = mouseX;
+            let currentY = mouseY;
+            
+            trails.forEach((trail, index) => {
+                trail.x += (currentX - trail.x) * 0.2;
+                trail.y += (currentY - trail.y) * 0.2;
+                
+                trail.element.style.left = trail.x - 2 + 'px';
+                trail.element.style.top = trail.y - 2 + 'px';
+                trail.element.style.opacity = 0.8 - (index * 0.1);
+                
+                currentX = trail.x;
+                currentY = trail.y;
+            });
+            
+            requestAnimationFrame(animateTrails);
+        }
+
+        animateTrails();
+
+        // Create dynamic stars
+        function createStars() {
+            const starsContainer = document.querySelector('.stars-container');
+            const starSizes = ['small', 'medium', 'large'];
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = `star ${starSizes[Math.floor(Math.random() * starSizes.length)]}`;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+
+            // Add shooting stars
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    createShootingStar();
+                }
+            }, 3000);
+        }
+
+        function createShootingStar() {
+            const starsContainer = document.querySelector('.stars-container');
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.left = Math.random() * 100 + '%';
+            shootingStar.style.top = Math.random() * 50 + '%';
+            starsContainer.appendChild(shootingStar);
+
+            setTimeout(() => {
+                shootingStar.remove();
+            }, 2000);
+        }
+
+        // Dynamic star appearance/disappearance
+        function animateStarAppearance() {
+            const stars = document.querySelectorAll('.star');
+            
+            setInterval(() => {
+                const randomStar = stars[Math.floor(Math.random() * stars.length)];
+                if (randomStar) {
+                    randomStar.style.opacity = '0';
+                    setTimeout(() => {
+                        randomStar.style.opacity = '';
+                    }, 1000 + Math.random() * 2000);
+                }
+            }, 500);
+        }
+
+        // Show/hide cursor on mobile
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function toggleCursor() {
+            const display = isMobile() ? 'none' : 'block';
+            cursor.style.display = display;
+            trails.forEach(trail => {
+                trail.element.style.display = display;
+            });
+            
+            if (isMobile()) {
+                document.body.style.cursor = 'auto';
+            }
+        }
+
+        toggleCursor();
+        window.addEventListener('resize', toggleCursor);
+
+        // Animate numbers counting up
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('[data-target]');
+            
+            numbers.forEach(number => {
+                const target = parseInt(number.getAttribute('data-target'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    number.textContent = Math.floor(current);
+                    
+                    if (current >= target) {
+                        number.textContent = target;
+                        clearInterval(timer);
+                    }
+                }, 30);
+            });
+        }
+
+        // Scroll animation observer
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Trigger number animation when stats section is visible
+                    if (entry.target.classList.contains('stats-section')) {
+                        animateNumbers();
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            animateStarAppearance();
+            
+            // Observe sections for scroll animations
+            const animatedSections = document.querySelectorAll('.stats-section, .about-section, .prize-section');
+            animatedSections.forEach(section => observer.observe(section));
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Card hover effects
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                cursor.style.width = '24px';
+                cursor.style.height = '24px';
+                cursor.style.backgroundColor = 'rgba(135, 206, 235, 0.2)';
+                cursor.style.borderColor = 'rgba(135, 206, 235, 1)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                cursor.style.width = '16px';
+                cursor.style.height = '16px';
+                cursor.style.backgroundColor = 'rgba(135, 206, 235, 0.1)';
+                cursor.style.borderColor = 'rgba(135, 206, 235, 0.8)';
+            });
+        });
+    </script>
+</body>
+</html>
