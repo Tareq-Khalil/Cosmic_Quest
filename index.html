@@ -174,35 +174,42 @@
         }
 
         .hero-card {
-            max-width: 100%;
-            width: 100%;
             max-width: 900px;
-            height:400px;
+            width: 100%;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 3rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
+            gap: 2rem;
+            width: 100%;
         }
 
         .logo {
             width: 150px;
             height: 150px;
-            background: linear-gradient(45deg, #4169E1, #1E90FF, #87CEEB);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #000;
             animation: float 6s ease-in-out infinite;
             box-shadow: 0 0 30px rgba(135, 206, 235, 0.6);
             position: relative;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .logo::before {
@@ -289,7 +296,7 @@
 
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -355,10 +362,13 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
+            justify-items: center;
         }
 
         .kpi {
             padding: 2rem;
+            max-width: 400px;
+            width: 100%;
         }
 
         .kpi strong {
@@ -500,14 +510,12 @@
             }
             
             .logo-container {
-                flex-direction: column;
-                gap: 2rem;
+                gap: 1.5rem;
             }
             
             .logo {
                 width: 120px;
                 height: 120px;
-                font-size: 1.5rem;
             }
             
             .logo::before {
@@ -535,6 +543,11 @@
             
             .card {
                 padding: 1.5rem;
+            }
+            
+            .hero-card {
+                height: auto;
+                min-height: 300px;
             }
         }
 
@@ -568,7 +581,9 @@
     <section class="hero">
         <div class="hero-card card">
             <div class="logo-container">
-                <div class="logo">CQ</div>
+                <div class="logo">
+                    <img src="cover.png" alt="Cosmic Quest Logo" />
+                </div>
                 <a href="https://soac.club/cosmicquest.html" class="register-btn">Register Now</a>
             </div>
         </div>
@@ -578,15 +593,19 @@
     <section class="stats-section">
         <div class="stats-container">
             <div class="stat-card card">
-                <span class="stat-number" data-target="211">0</span>
+                <span class="stat-number" data-target="150">0</span>
+                <div class="stat-label">Teams</div>
+            </div>
+            <div class="stat-card card">
+                <span class="stat-number" data-target="400">0</span>
                 <div class="stat-label">Participants</div>
             </div>
             <div class="stat-card card">
-                <span class="stat-number" data-target="22">0</span>
+                <span class="stat-number" data-target="25">0</span>
                 <div class="stat-label">Countries</div>
             </div>
             <div class="stat-card card">
-                <span class="stat-number" data-target="1">0</span>
+                <span class="stat-number" data-target="2">0</span>
                 <div class="stat-label">Prizes</div>
             </div>
         </div>
