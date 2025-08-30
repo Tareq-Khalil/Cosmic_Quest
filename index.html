@@ -305,6 +305,7 @@
         }
 
         /* About Section */
+/* About Section */
         .about-section {
             padding: 5rem 2rem;
             max-width: 1200px;
@@ -340,18 +341,19 @@
         }
 
         .kpis {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 2rem;
             margin-bottom: 3rem;
-            justify-items: center;
             justify-content: center;
         }
 
         .kpi {
             padding: 2rem;
             max-width: 400px;
+            min-width: 300px;
             width: 100%;
+            flex: 0 1 auto;
         }
 
         .kpi strong {
@@ -399,7 +401,6 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
-
         /* Prize Section */
         .prize-section {
             padding: 5rem 2rem;
