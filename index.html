@@ -458,14 +458,19 @@
             width: 100%;
             max-width: 300px;
             height: 200px;
-            background: linear-gradient(45deg, #333, #666);
             border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: white;
             margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .telescope-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
         }
 
         .prize-info-card {
@@ -487,16 +492,20 @@
         .sponsor-logo {
             width: 150px;
             height: 80px;
-            background: linear-gradient(45deg, #4169E1, #87CEEB);
             border-radius: 10px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin: 1rem;
             text-decoration: none;
-            color: #000;
-            font-weight: bold;
             transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .sponsor-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .sponsor-logo:hover {
@@ -666,7 +675,9 @@
             <h2>This Year's Grand Prize</h2>
             <div class="prize-container">
                 <div class="telescope-card card">
-                    <div class="telescope-img">VR 114-500 EQ Telescope Image</div>
+                    <div class="telescope-img">
+                        <img src="telescope.png" alt="VR 114-500 EQ Telescope" />
+                    </div>
                 </div>
                 <div class="prize-info-card card">
                     <div class="prize-title">VR 114-500 EQ Telescope!</div>
@@ -675,7 +686,7 @@
                     <div class="sponsor-info">
                         <p>Sponsored by</p>
                         <a href="http://atn-telescope.com" class="sponsor-logo" target="_blank">
-                            Voyager Factory
+                            <img src="voyager.png" alt="Voyager Factory Logo" />
                         </a>
                     </div>
                 </div>
@@ -814,10 +825,10 @@
                 
                 const timer = setInterval(() => {
                     current += increment;
-                    number.textContent = Math.floor(current);
+                    number.textContent = Math.floor(current) + '+';
                     
                     if (current >= target) {
-                        number.textContent = target;
+                        number.textContent = target + '+';
                         clearInterval(timer);
                     }
                 }, 30);
